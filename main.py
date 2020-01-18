@@ -52,13 +52,12 @@ def set_color(x, y, color, desc):
         'clientName': 'philiip11'
     }
     signal_json = json.dumps(signal)
-    # res_signal = requests.post(backendUrl + '/api/1.0/signals', data=signal_json, headers=headers)
-    print ("set color of " + str(x) + ',' + str(y) + " to " \
-          + get_color_escape_hex(color) \
-          + color + RESET + " (" + desc + ")")
-    # checking the response
-    # if not res_signal.ok:
-    #     print "Error: " + res_signal.text
+    res_signal = requests.post(backendUrl + '/api/1.0/signals', data=signal_json, headers=headers)
+    print ("set color of " + str(x) + ',' + str(y) + " to "
+           + get_color_escape_hex(color)
+           + color + RESET + " (" + desc + ")")
+    if not res_signal.ok:
+        print "Error: " + res_signal.text
     time.sleep(0.01)
 
 
