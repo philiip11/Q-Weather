@@ -5,9 +5,7 @@ import requests
 import random
 import time
 import pprint
-import sys
-from argparse import ArgumentParser
-from xml.dom import minidom
+from datetime import datetime
 
 try:
     from urllib.request import urlopen
@@ -15,27 +13,52 @@ try:
 except ImportError:
     from urllib import urlopen, urlencode
 
+location = "Gaimersheim, DE"
 backendUrl = 'http://localhost:27301'
 headers = {"Content-type": "application/json"}
-r = lambda: random.randint(0, 255)
 
-API_KEY = "" # Enter OpenWeather API key here
+API_KEY = open("api.key", 'r').read(1024)
 pp = pprint.PrettyPrinter(indent=4)
 
+RESET = '\033[0m'
 
-def set_color(x, y, color):
+
+def r():
+    return random.randint(0, 255)
+
+
+def hex_to_rgb(value):
+    value = value.lstrip('#')
+    lv = len(value)
+    return tuple(int(value[iterator:iterator + lv // 3], 16) for iterator in range(0, lv, lv // 3))
+
+
+def get_color_escape(red, green, blue, background=False):
+    return '\033[{};2;{};{};{}m'.format(48 if background else 38, red, green, blue)
+
+
+def get_color_escape_hex(hex_color):
+    colors = hex_to_rgb(hex_color)
+    return get_color_escape(colors[0], colors[1], colors[2], )
+
+
+def set_color(x, y, color, desc):
     signal = {
         'zoneId': str(x) + ',' + str(y),
         'color': color,
         'effect': 'SET_COLOR',
         'pid': 'DK4QPID',
+        'name': desc,
         'clientName': 'philiip11'
     }
     signal_json = json.dumps(signal)
-    res_signal = requests.post(backendUrl + '/api/1.0/signals', data=signal_json, headers=headers)
+    # res_signal = requests.post(backendUrl + '/api/1.0/signals', data=signal_json, headers=headers)
+    print "set color of " + str(x) + ',' + str(y) + " to " \
+          + get_color_escape_hex(color) \
+          + color + RESET + " (" + desc + ")"
     # checking the response
-    if not res_signal.ok:
-        print "Error: " + res_signal.text
+    # if not res_signal.ok:
+    #     print "Error: " + res_signal.text
     time.sleep(0.01)
 
 
@@ -53,21 +76,31 @@ def delete_all():
 def random_colors():
     for y in range(0, 6):
         for x in range(0, 22):
-            set_color(x, y, '#%02X%02X%02X' % (r(), r(), r()))
+            set_color(x, y, '#%02X%02X%02X' % (r(), r(), r()), None)
 
 
-def get_current_weather(location):
-    url = "https://api.openweathermap.org/data/2.5/weather?units=metric&APPID=" + API_KEY + '&' + urlencode(
-        {"q": location})
+def get_current_weather(c_location):
+    url = "https://api.openweathermap.org/data/2.5/weather?units=metric&lang=de&APPID=" + API_KEY + '&' + urlencode(
+        {"q": c_location})
     request = requests.get(url)
     if request.ok:
         weather_object = json.loads(request.text)
         # pp.pprint(weather_object)
-        return weather_object["weather"][0]["icon"]
+        return weather_object
+
+
+def get_forecast_weather(c_location):
+    url = "https://api.openweathermap.org/data/2.5/forecast?units=metric&lang=de&APPID=" + API_KEY + '&' + urlencode(
+        {"q": c_location})
+    request = requests.get(url)
+    if request.ok:
+        weather_object = json.loads(request.text)
+        # pp.pprint(weather_object)
+        return weather_object
 
 
 def get_color_from_weather(weather):
-    return {
+    result = {
         "01d": "#ffff00",
         "02d": "#99ff33",
         "03d": "#666699",
@@ -76,12 +109,40 @@ def get_color_from_weather(weather):
         "10d": "#0066ff",
         "11d": "#ff0066",
         "13d": "#ffffff",
-        "50d": "#cc33ff"
+        "50d": "#cc33ff",
+        "01n": "#777700",
+        "02n": "#4c7f19",
+        "03n": "#33334c",
+        "04n": "#4c7f19",
+        "09n": "#007777",
+        "10n": "#003377",
+        "11n": "#770033",
+        "13n": "#777777",
+        "50n": "#661977"
     }.get(weather, "#ff0000")
+    if result == "#ff0000":
+        print "Fehler: " + weather
+    return result
 
 
 # random_colors()
 # delete_all()
-set_color(0, 0, get_color_from_weather(get_current_weather("Gaimersheim, DE")))
-# get_weather("Gaimersheim, DE")
-# get_weather("Sydney, AU")
+while True:
+    current_weather = get_current_weather(location)
+    current_weather_color = get_color_from_weather(current_weather["weather"][0]["icon"])
+    current_weather_text = current_weather["weather"][0]["description"] + " (" + datetime.fromtimestamp(
+        int(current_weather["dt"])).strftime("%H:%M:%S Uhr %d.%m.") + ")"
+    set_color(0, 0, current_weather_color, current_weather_text)
+
+    forecast = get_forecast_weather(location)
+    for i in range(0, 14):
+        i_weather = forecast["list"][i]["weather"][0]
+        i_time = datetime.fromtimestamp(int(forecast["list"][i]["dt"])).strftime("%H Uhr %d.%m.")
+        key = i + 2
+        if key > 5:
+            key = key + 1
+
+        i_weather_color = get_color_from_weather(i_weather["icon"])
+        i_weather_text = i_weather["description"] + " (" + i_time + ")"
+        set_color(key, 0, i_weather_color, i_weather_text)
+    time.sleep(600)  # Wait 10 minutes
