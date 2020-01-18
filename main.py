@@ -53,9 +53,9 @@ def set_color(x, y, color, desc):
     }
     signal_json = json.dumps(signal)
     # res_signal = requests.post(backendUrl + '/api/1.0/signals', data=signal_json, headers=headers)
-    print "set color of " + str(x) + ',' + str(y) + " to " \
+    print ("set color of " + str(x) + ',' + str(y) + " to " \
           + get_color_escape_hex(color) \
-          + color + RESET + " (" + desc + ")"
+          + color + RESET + " (" + desc + ")")
     # checking the response
     # if not res_signal.ok:
     #     print "Error: " + res_signal.text
@@ -69,7 +69,7 @@ def delete_all():
             res_signal = requests.delete(backendUrl + '/api/1.0/signals' + '/pid/DK4QPID/zoneId/' + zone_id,
                                          headers=headers)
             if not res_signal.ok:
-                print "Error: " + res_signal.text
+                print ("Error: " + res_signal.text)
             time.sleep(0.01)
 
 
@@ -121,7 +121,7 @@ def get_color_from_weather(weather):
         "50n": "#661977"
     }.get(weather, "#ff0000")
     if result == "#ff0000":
-        print "Fehler: " + weather
+        print ("Fehler: " + weather)
     return result
 
 
