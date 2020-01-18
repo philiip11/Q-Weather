@@ -22,7 +22,7 @@ pp = pprint.PrettyPrinter(indent=4)
 
 RESET = '\033[0m'
 
-q = 1  # change to 0 for das keyboard 4q
+q = 0  # change to 1 for das keyboard 5q
 
 
 def r():

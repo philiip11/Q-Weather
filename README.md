@@ -1,6 +1,8 @@
 # Q-Weather
 Shows the weather for next 40 hours or so on your Das Keyboard 4Q
 
+This will work even if your company uses a proxy that the q software doesn't work with.
+
 # How to read
 The escape shows the current weather, all keys to the right show the weather for the next hours,
 each key is three more hours into the future.
