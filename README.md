@@ -13,5 +13,8 @@ each key is three more hours into the future.
 Each color stands for another type of weather, blue is rain, white is snow etc.
 
 # How to install
-put "pythonw /path/to/main.py" in your startup path and create an "api.key"-file with your openWeatherMap.org api-key
-The weather will be refreshed every 10 minutes
+Put "pythonw /path/to/main.py" in your startup path and create an "api.key"-file with your openWeatherMap.org api-key.
+
+The weather will be refreshed every 10 minutes.
+
+You may need to change the location and type of your keyboard in the python file.
