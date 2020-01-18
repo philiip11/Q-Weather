@@ -13,7 +13,9 @@ try:
 except ImportError:
     from urllib import urlopen, urlencode
 
-location = "Sydney, AU"
+location = "Sydney, AU"  # change to your location, "City, CountryCode"
+q = 0  # change to 1 for das keyboard 5q
+
 backendUrl = 'http://localhost:27301'
 headers = {"Content-type": "application/json"}
 
@@ -21,8 +23,6 @@ API_KEY = open("api.key", 'r').read(1024)
 pp = pprint.PrettyPrinter(indent=4)
 
 RESET = '\033[0m'
-
-q = 0  # change to 1 for das keyboard 5q
 
 
 def r():
