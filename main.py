@@ -13,7 +13,7 @@ try:
 except ImportError:
     from urllib import urlopen, urlencode
 
-location = "Gaimersheim, DE"
+location = "Sydney, AU"
 backendUrl = 'http://localhost:27301'
 headers = {"Content-type": "application/json"}
 
@@ -21,6 +21,8 @@ API_KEY = open("api.key", 'r').read(1024)
 pp = pprint.PrettyPrinter(indent=4)
 
 RESET = '\033[0m'
+
+q = 1  # change to 0 for das keyboard 4q
 
 
 def r():
@@ -126,19 +128,20 @@ def get_color_from_weather(weather):
 
 # random_colors()
 # delete_all()
+
 while True:
     current_weather = get_current_weather(location)
     current_weather_color = get_color_from_weather(current_weather["weather"][0]["icon"])
     current_weather_text = current_weather["weather"][0]["description"] + " (" + datetime.fromtimestamp(
         int(current_weather["dt"])).strftime("%H:%M:%S Uhr %d.%m.") + ")"
-    set_color(0, 0, current_weather_color, current_weather_text)
+    set_color(q, 0, current_weather_color, current_weather_text)
 
     forecast = get_forecast_weather(location)
-    for i in range(0, 14):
+    for i in range(0, 15):
         i_weather = forecast["list"][i]["weather"][0]
         i_time = datetime.fromtimestamp(int(forecast["list"][i]["dt"])).strftime("%H Uhr %d.%m.")
-        key = i + 2
-        if key > 5:
+        key = i + 2 + q
+        if key > 5 + q:
             key = key + 1
 
         i_weather_color = get_color_from_weather(i_weather["icon"])

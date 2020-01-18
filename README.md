@@ -3,7 +3,10 @@ Shows the weather for next 40 hours or so on your Das Keyboard 4Q
 
 # How to read
 The escape shows the current weather, all keys to the right show the weather for the next hours,
-each key is three more hours into the future
+each key is three more hours into the future.
+
+
+![image of a keyboard with some text](q-weather.png)
 
 Each color stands for another type of weather, blue is rain, white is snow etc.
 
