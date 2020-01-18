@@ -1,5 +1,5 @@
 # Q-Weather
-Shows the weather for next 40 hours or so on your Das Keyboard 4Q
+Shows the weather for next 40 hours or so on your Das Keyboard 4Q or 5Q
 
 This will work even if your company uses a proxy that the q software doesn't work with.
 
